@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Приветствие</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px 45px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 550px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 32px;
+        }
+        
+        .greeting {
+            font-size: 22px;
+            color: #667eea;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f0f2ff;
+            border-radius: 10px;
+        }
+        
+        .greeting span {
+            font-weight: bold;
+            color: #764ba2;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            outline: none;
+            box-sizing: border-box;
+        }
+        
+        .form-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        
+        .form-input.error {
+            border-color: #f44336;
+            box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.2);
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+        
+        .error-message {
+            color: #f44336;
+            background: #ffebee;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            text-align: left;
+        }
+        
+        .error-message ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .error-message li {
+            padding: 3px 0;
+        }
+        
+        .info-text {
+            color: #888;
+            font-size: 14px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .history {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: left;
+        }
+        
+        .history h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: normal;
+        }
+        
+        .history .user-item {
+            display: inline-block;
+            background: #f0f2ff;
+            color: #667eea;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+            margin: 3px 4px 3px 0;
+        }
+        
+        .history .user-item:last-child {
+            background: #667eea;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Добро пожаловать!</h1>
+        
+        <div class="greeting">
+            Привет, <span>{{ greeting_name }}</span>!
+        </div>
+        
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.name }}
+            </div>
+            
+            {% if form.name.errors %}
+                <div class="error-message">
+                    <ul>
+                        {% for error in form.name.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            
+            <button type="submit" class="btn-submit">Сохранить имя</button>
+        </form>
+        
+        {% if all_users %}
+            <div class="history">
+                <h3>Последние добавленные имена:</h3>
+                {% for user in all_users %}
+                    <span class="user-item">{{ user.name }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <p class="info-text">Введите имя, чтобы увидеть персонализированное приветствие</p>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const formInput = document.querySelector('.form-input');
+            const errorMessages = document.querySelector('.error-message');
+            
+            if (errorMessages) {
+                formInput.classList.add('error');
+            }
+            
+            formInput.addEventListener('input', function() {
+                this.classList.remove('error');
+                const errorDiv = document.querySelector('.error-message');
+                if (errorDiv) {
+                    errorDiv.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
